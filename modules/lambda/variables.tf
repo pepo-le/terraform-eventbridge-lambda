@@ -22,3 +22,9 @@ variable "runtime" {
   description = "ランタイム"
   type        = string
 }
+
+variable "timeout" {
+  description = "タイムアウト時間"
+  type        = number
+  default     = 3
+}

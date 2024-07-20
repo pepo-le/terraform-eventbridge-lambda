@@ -9,6 +9,7 @@ resource "aws_lambda_function" "main" {
   role          = var.exec_role_arn
   handler       = "index.handler"
   runtime       = var.runtime
+  timeout       = var.timeout
 
   filename = var.archive_output_path
 }
