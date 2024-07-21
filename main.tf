@@ -32,11 +32,18 @@ module "lambda" {
 }
 
 module "eventbridge_lambda" {
-  source               = "./modules/eventbridge-lambda"
-  event_name           = "foo-dev-event"
-  event_description    = "foo-dev-event-description"
-  schedule_expression  = "cron(* * * * ? *)"
-  lambda_arn           = module.lambda.arn
-  lambda_function_name = module.lambda.function_name
+  source              = "./modules/eventbridge"
+  event_name          = "foo-dev-event"
+  event_description   = "foo-dev-event-description"
+  target_id           = "eventbridge-lambda"
+  schedule_expression = "cron(* * * * ? *)"
+  target_arn          = module.lambda.arn
+}
+
+module "lambda_permission" {
+  source               = "./modules/lambda_permission"
   policy_statement_id  = "AllowExecutionFromEventBridge"
+  lambda_function_name = module.lambda.function_name
+  principal            = "events.amazonaws.com"
+  source_arn           = module.eventbridge_lambda.arn
 }

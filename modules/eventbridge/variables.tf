@@ -14,13 +14,13 @@ variable "schedule_expression" {
   type        = string
 }
 
-variable "lambda_arn" {
-  description = "Lambda関数のARN"
+variable "target_id" {
+  description = "EventBridgeのターゲットID"
   type        = string
 }
 
-variable "lambda_function_name" {
-  description = "Lambda関数の名前"
+variable "target_arn" {
+  description = "EventBridgeのターゲットARN"
   type        = string
 }
 
@@ -34,9 +34,4 @@ variable "event_age" {
   description = "イベントの最大保持時間"
   type        = number
   default     = 60
-}
-
-variable "policy_statement_id" {
-  description = "ポリシーステートメントID"
-  type        = string
 }
