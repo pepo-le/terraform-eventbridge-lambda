@@ -1,12 +1,17 @@
-variable "event_name" {
+variable "schedule_name" {
   description = "EventBridgeのイベント名"
   type        = string
 }
 
-variable "event_description" {
-  description = "EventBridgeのイベントの説明"
+variable "group_name" {
+  description = "EventBridgeのグループ名"
   type        = string
-  default     = ""
+}
+
+variable "flexible_time_window_mode" {
+  description = "EventBridgeのフレキシブルタイムウィンドウモード"
+  type        = string
+  default     = "OFF"
 }
 
 variable "schedule_expression" {
@@ -14,9 +19,10 @@ variable "schedule_expression" {
   type        = string
 }
 
-variable "target_id" {
-  description = "EventBridgeのターゲットID"
+variable "schedule_expression_timezone" {
+  description = "EventBridgeのスケジュール式のタイムゾーン"
   type        = string
+  default     = "Asia/Tokyo"
 }
 
 variable "target_arn" {
@@ -30,10 +36,15 @@ variable "retry_attempts" {
   default     = 0
 }
 
-variable "event_age" {
+variable "retry_age" {
   description = "イベントの最大保持時間"
   type        = number
   default     = 60
+}
+
+variable "role_arn" {
+  description = "ターゲットに渡すロール"
+  type        = string
 }
 
 variable "input" {

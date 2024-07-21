@@ -1,4 +1,3 @@
-# IAMロールの作成
 module "iam_role_exec_lambda" {
   source    = "./modules/iam_role"
   role_name = "foo-dev-task-role"
@@ -40,10 +39,62 @@ module "eventbridge_lambda" {
   target_arn          = module.lambda.arn
 }
 
-module "lambda_permission" {
+module "lambda_permission_eventbridge" {
   source               = "./modules/lambda_permission"
   policy_statement_id  = "AllowExecutionFromEventBridge"
   lambda_function_name = module.lambda.function_name
   principal            = "events.amazonaws.com"
   source_arn           = module.eventbridge_lambda.arn
+}
+
+module "iam_role_eventbridge_scheduler" {
+  source    = "./modules/iam_role"
+  role_name = "foo-dev-eventbridge-scheduler-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "scheduler.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+module "iam_policy_eventbridge_scheduler_lambda" {
+  source             = "./modules/iam_policy"
+  policy_name        = "eventbridge-shcedule-lambda-policy"
+  policy_description = "eventbridge-schedule-lambda-policy"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "lambda:InvokeFunction"
+        ],
+        Effect   = "Allow",
+        Resource = "arn:aws:lambda:*"
+      }
+    ]
+  })
+}
+
+module "iam_role_policy_attachment_bastion_startstop" {
+  source     = "./modules/iam_role_policy_attachment"
+  role_name  = module.iam_role_eventbridge_scheduler.name
+  policy_arn = module.iam_policy_eventbridge_scheduler_lambda.arn
+}
+
+module "eventbridge_scheduler_lambda" {
+  source                       = "./modules/eventbridge_scheduler"
+  schedule_name                = "foo-dev-event"
+  group_name                   = "default"
+  flexible_time_window_mode    = "OFF"
+  schedule_expression          = "cron(* * * * ? *)"
+  schedule_expression_timezone = "Asia/Tokyo"
+  target_arn                   = module.lambda.arn
+  role_arn                     = module.iam_role_eventbridge_scheduler.arn
 }
