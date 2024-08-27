@@ -12,4 +12,8 @@ resource "aws_lambda_function" "main" {
   timeout       = var.timeout
 
   filename = var.archive_output_path
+
+  environment {
+    variables = var.environment_variables
+  }
 }

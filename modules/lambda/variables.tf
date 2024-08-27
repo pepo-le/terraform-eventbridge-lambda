@@ -28,3 +28,9 @@ variable "timeout" {
   type        = number
   default     = 3
 }
+
+variable "environment_variables" {
+  description = "環境変数"
+  type        = map(string)
+  default     = {}
+}
