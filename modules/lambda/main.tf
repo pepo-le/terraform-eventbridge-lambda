@@ -13,6 +13,8 @@ resource "aws_lambda_function" "main" {
 
   filename = var.archive_output_path
 
+  layers = var.layer_arns
+
   environment {
     variables = var.environment_variables
   }

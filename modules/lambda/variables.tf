@@ -29,6 +29,12 @@ variable "timeout" {
   default     = 3
 }
 
+variable "layer_arns" {
+  description = "Lambda LayerのARN"
+  type        = list(string)
+  default     = []
+}
+
 variable "environment_variables" {
   description = "環境変数"
   type        = map(string)
